@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mappa pali sala corrente continua</title>
+
+  <style>
+    .map-container {
+      position: relative;
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+    }
+
+    .map-container img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .marker {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      cursor: pointer;
+      border: 2px solid #fff;
+      user-select: none;
+    }
+
+    .azzurro {
+      background: #0099ff;
+    }
+
+    .verde {
+      background: #00cc44;
+    }
+
+    /* Evidenziazione palo selezionato */
+    .selected {
+      width: 28px !important;
+      height: 28px !important;
+      border: 3px solid yellow !important;
+      z-index: 20;
+    }
+
+    .tooltip {
+      position: absolute;
+      padding: 6px 10px;
+      background: rgba(0,0,0,0.85);
+      color: #fff;
+      font-size: 16px;
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      font-weight: 600;
+      border-radius: 4px;
+      white-space: nowrap;
+      transform: translate(-50%, -120%);
+      pointer-events: none;
+      display: none;
+      z-index: 30;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="map-container" id="map">
+    <img src="img/Mappa_pali_sala_CC1.jpg" alt="Mappa pali sala corrente continua" />
+    <div id="tooltip" class="tooltip"></div>
+  </div>
+
+  <script>
+    const markers = [
+      // --- AZZURRI 295–324 ---
+      { n: 295, x: 0.0583, y: 0.3312, pdf: "pdf/P_295.pdf" },
+      { n: 296, x: 0.0913, y: 0.3312, pdf: "pdf/P_296.pdf" },
+      { n: 297, x: 0.0750, y: 0.3558, pdf: "pdf/P_297.pdf" },
+      { n: 298, x: 0.0580, y: 0.3810, pdf: "pdf/P_298.pdf" },
+      { n: 299, x: 0.0913, y: 0.3810, pdf: "pdf/P_299.pdf" },
+      { n: 300, x: 0.0580, y: 0.5023, pdf: "pdf/P_300.pdf" },
+      { n: 301, x: 0.0913, y: 0.5018, pdf: "pdf/P_301.pdf" },
+      { n: 302, x: 0.0747, y: 0.5272, pdf: "pdf/P_302.pdf" },
+      { n: 303, x: 0.0583, y: 0.5523, pdf: "pdf/P_303.pdf" },
+      { n: 304, x: 0.0913, y: 0.5523, pdf: "pdf/P_304.pdf" },
+      { n: 305, x: 0.0583, y: 0.6730, pdf: "pdf/P_305.pdf" },
+      { n: 306, x: 0.0913, y: 0.6725, pdf: "pdf/P_306.pdf" },
+      { n: 307, x: 0.0750, y: 0.6978, pdf: "pdf/P_307.pdf" },
+      { n: 308, x: 0.0583, y: 0.7229, pdf: "pdf/P_308.pdf" },
+      { n: 309, x: 0.0913, y: 0.7229, pdf: "pdf/P_309.pdf" },
+      { n: 310, x: 0.0543, y: 0.8371, pdf: "pdf/P_310.pdf" },
+      { n: 311, x: 0.0977, y: 0.8371, pdf: "pdf/P_311.pdf" },
+      { n: 312, x: 0.0760, y: 0.8689, pdf: "pdf/P_312.pdf" },
+      { n: 313, x: 0.0543, y: 0.9020, pdf: "pdf/P_313.pdf" },
+      { n: 314, x: 0.0973, y: 0.9020, pdf: "pdf/P_314.pdf" },
+      { n: 315, x: 0.1863, y: 0.8366, pdf: "pdf/P_315.pdf" },
+      { n: 316, x: 0.2293, y: 0.8366, pdf: "pdf/P_316.pdf" },
+      { n: 317, x: 0.2080, y: 0.8689, pdf: "pdf/P_317.pdf" },
+      { n: 318, x: 0.1863, y: 0.9020, pdf: "pdf/P_318.pdf" },
+      { n: 319, x: 0.2293, y: 0.9020, pdf: "pdf/P_319.pdf" },
+      { n: 320, x: 0.3210, y: 0.8366, pdf: "pdf/P_320.pdf" },
+      { n: 321, x: 0.3640, y: 0.8366, pdf: "pdf/P_321.pdf" },
+      { n: 322, x: 0.3423, y: 0.8689, pdf: "pdf/P_322.pdf" },
+      { n: 323, x: 0.3210, y: 0.9020, pdf: "pdf/P_323.pdf" },
+      { n: 324, x: 0.3637, y: 0.9020, pdf: "pdf/P_324.pdf" },
+
+      // --- VERDI 325–364 ---
+      { n: 325, x: 0.4550, y: 0.8366, pdf: "pdf/P_325.pdf" },
+      { n: 326, x: 0.4983, y: 0.8366, pdf: "pdf/P_326.pdf" },
+      { n: 327, x: 0.4767, y: 0.8689, pdf: "pdf/P_327.pdf" },
+      { n: 328, x: 0.4553, y: 0.9020, pdf: "pdf/P_328.pdf" },
+      { n: 329, x: 0.4987, y: 0.9020, pdf: "pdf/P_329.pdf" },
+      { n: 330, x: 0.5897, y: 0.8371, pdf: "pdf/P_330.pdf" },
+      { n: 331, x: 0.6327, y: 0.8371, pdf: "pdf/P_331.pdf" },
+      { n: 332, x: 0.6110, y: 0.8689, pdf: "pdf/P_332.pdf" },
+      { n: 333, x: 0.5897, y: 0.9020, pdf: "pdf/P_333.pdf" },
+      { n: 334, x: 0.6327, y: 0.9015, pdf: "pdf/P_334.pdf" },
+      { n: 335, x: 0.7217, y: 0.8366, pdf: "pdf/P_335.pdf" },
+      { n: 336, x: 0.7647, y: 0.8366, pdf: "pdf/P_336.pdf" },
+      { n: 337, x: 0.7430, y: 0.8689, pdf: "pdf/P_337.pdf" },
+      { n: 338, x: 0.7217, y: 0.9020, pdf: "pdf/P_338.pdf" },
+      { n: 339, x: 0.7647, y: 0.9020, pdf: "pdf/P_339.pdf" },
+      { n: 340, x: 0.7280, y: 0.6730, pdf: "pdf/P_340.pdf" },
+      { n: 341, x: 0.7610, y: 0.6730, pdf: "pdf/P_341.pdf" },
+      { n: 342, x: 0.7443, y: 0.6978, pdf: "pdf/P_342.pdf" },
+      { n: 343, x: 0.7280, y: 0.7224, pdf: "pdf/P_343.pdf" },
+      { n: 344, x: 0.7610, y: 0.7229, pdf: "pdf/P_344.pdf" },
+      { n: 345, x: 0.7280, y: 0.4812, pdf: "pdf/P_345.pdf" },
+      { n: 346, x: 0.7610, y: 0.4812, pdf: "pdf/P_346.pdf" },
+      { n: 347, x: 0.7443, y: 0.5063, pdf: "pdf/P_347.pdf" },
+      { n: 348, x: 0.7280, y: 0.5310, pdf: "pdf/P_348.pdf" },
+      { n: 349, x: 0.7610, y: 0.5310, pdf: "pdf/P_349.pdf" },
+      { n: 350, x: 0.8130, y: 0.4545, pdf: "pdf/P_350.pdf" },
+      { n: 351, x: 0.8560, y: 0.4545, pdf: "pdf/P_351.pdf" },
+      { n: 352, x: 0.8347, y: 0.4870, pdf: "pdf/P_352.pdf" },
+      { n: 353, x: 0.8130, y: 0.5193, pdf: "pdf/P_353.pdf" },
+      { n: 354, x: 0.8557, y: 0.5193, pdf: "pdf/P_354.pdf" },
+      { n: 355, x: 0.8990, y: 0.4545, pdf: "pdf/P_355.pdf" },
+      { n: 356, x: 0.9420, y: 0.4545, pdf: "pdf/P_356.pdf" },
+      { n: 357, x: 0.9203, y: 0.4870, pdf: "pdf/P_357.pdf" },
+      { n: 358, x: 0.8987, y: 0.5193, pdf: "pdf/P_358.pdf" },
+      { n: 359, x: 0.9420, y: 0.5193, pdf: "pdf/P_359.pdf" },
+      { n: 360, x: 0.9053, y: 0.3109, pdf: "pdf/P_360.pdf" },
+      { n: 361, x: 0.9383, y: 0.3109, pdf: "pdf/P_361.pdf" },
+      { n: 362, x: 0.9217, y: 0.3361, pdf: "pdf/P_362.pdf" },
+      { n: 363, x: 0.9053, y: 0.3610, pdf: "pdf/P_363.pdf" },
+      { n: 364, x: 0.9383, y: 0.3610, pdf: "pdf/P_364.pdf" }
+    ];
+
+    const map = document.getElementById("map");
+    const tooltip = document.getElementById("tooltip");
+
+    let selectedMarker = null;
+
+    markers.forEach(m => {
+      const el = document.createElement("div");
+
+      // colore automatico
+      el.className = "marker " + (m.n <= 324 ? "azzurro" : "verde");
+
+      // nessun numero dentro il marker
+      el.textContent = "";
+
+      el.style.left = (m.x * 100) + "%";
+      el.style.top = (m.y * 100) + "%";
+
+      el.addEventListener("mouseenter", () => {
+        tooltip.textContent = "Palo " + m.n;
+        tooltip.style.left = (m.x * 100) + "%";
+        tooltip.style.top = (m.y * 100) + "%";
+        tooltip.style.display = "block";
+      });
+
+      el.addEventListener("mouseleave", () => {
+        tooltip.style.display = "none";
+      });
+
+      el.addEventListener("click", () => {
+        if (selectedMarker) selectedMarker.classList.remove("selected");
+
+        el.classList.add("selected");
+        selectedMarker = el;
+
+        window.open(m.pdf, "_blank");
+      });
+
+      map.appendChild(el);
+    });
+  </script>
+</body>
+</html>
