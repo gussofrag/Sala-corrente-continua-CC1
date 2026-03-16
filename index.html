@@ -29,13 +29,8 @@
       user-select: none;
     }
 
-    .azzurro {
-      background: #0099ff;
-    }
-
-    .verde {
-      background: #00cc44;
-    }
+    .azzurro { background: #0099ff; }
+    .verde { background: #00cc44; }
 
     .selected {
       width: 16px !important;
@@ -192,6 +187,15 @@
 
     let selectedMarker = null;
 
+    // Tooltip persistente
+    tooltip.addEventListener("mouseenter", () => {
+      tooltip.style.display = "block";
+    });
+
+    tooltip.addEventListener("mouseleave", () => {
+      tooltip.style.display = "none";
+    });
+
     markers.forEach(m => {
       const el = document.createElement("div");
 
@@ -211,11 +215,16 @@
         tooltip.style.display = "block";
       });
 
+      // Ritardo intelligente per non chiudere il tooltip
       el.addEventListener("mouseleave", () => {
-        tooltip.style.display = "none";
+        setTimeout(() => {
+          if (!tooltip.matches(':hover')) {
+            tooltip.style.display = "none";
+          }
+        }, 100);
       });
 
-      // Se vuoi mantenere la selezione grafica
+      // Selezione grafica
       el.addEventListener("click", () => {
         if (selectedMarker) selectedMarker.classList.remove("selected");
         el.classList.add("selected");
