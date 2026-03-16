@@ -37,7 +37,6 @@
       background: #00cc44;
     }
 
-    /* Evidenziazione palo selezionato */
     .selected {
       width: 16px !important;
       height: 16px !important;
@@ -45,54 +44,69 @@
       z-index: 20;
     }
 
+    /* Tooltip doppio */
     .tooltip {
       position: absolute;
-      padding: 6px 10px;
+      padding: 10px 14px;
       background: rgba(0,0,0,0.85);
       color: #fff;
-      font-size: 16px;
+      font-size: 15px;
       font-family: "Segoe UI", Tahoma, sans-serif;
-      font-weight: 600;
-      border-radius: 4px;
+      font-weight: 500;
+      border-radius: 6px;
       white-space: nowrap;
       transform: translate(-50%, -120%);
-      pointer-events: none;
+      pointer-events: auto;
       display: none;
       z-index: 30;
+    }
+
+    .tooltip a {
+      color: #66ccff;
+      text-decoration: none;
+      font-weight: 600;
+      display: block;
+      margin: 3px 0;
+    }
+
+    .tooltip a:hover {
+      text-decoration: underline;
+    }
+
+    /* Pulsante casetta */
+    .home-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(0,0,0,0.75);
+      padding: 10px;
+      border-radius: 50%;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.4);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .home-btn:hover {
+      background: rgba(0,0,0,0.9);
+      transform: scale(1.08);
     }
   </style>
 </head>
 
 <body>
-  <!-- 🔵 PULSANTE CASETTA (TORNA ALLA KEY PLANT) -->
-<a href="https://gussofrag.github.io/Key-Plant/"
-   style="
-     position: fixed;
-     top: 20px;
-     right: 20px;
-     background: rgba(0,0,0,0.75);
-     padding: 10px;
-     border-radius: 50%;
-     box-shadow: 0 3px 8px rgba(0,0,0,0.4);
-     z-index: 9999;
-     display: flex;
-     align-items: center;
-     justify-content: center;
-     width: 48px;
-     height: 48px;
-     transition: 0.2s;
-     cursor: pointer;
-   "
-   onmouseover="this.style.background='rgba(0,0,0,0.9)'"
-   onmouseout="this.style.background='rgba(0,0,0,0.75)'"
-   title="Torna alla Key Plant">
 
-  <svg width="26" height="26" viewBox="0 0 24 24" fill="white">
-    <path d="M3 10.5L12 3l9 7.5V21a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V10.5z"/>
-  </svg>
-
-</a>
-<!-- 🔵 FINE PULSANTE CASETTA -->
+  <!-- 🔵 PULSANTE CASETTA -->
+  <a href="https://gussofrag.github.io/Key-Plant/" class="home-btn" title="Torna alla Key Plant">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="white">
+      <path d="M3 10.5L12 3l9 7.5V21a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V10.5z"/>
+    </svg>
+  </a>
 
   <div class="map-container" id="map">
     <img src="img/Mappa_pali_sala_CC1.jpg" alt="Mappa pali sala corrente continua" />
@@ -101,79 +115,76 @@
 
   <script>
     const markers = [
-      // --- AZZURRI 295–324 ---
-      { n: 295, x: 0.0583, y: 0.3312, pdf: "pdf/P_295.pdf" },
-      { n: 296, x: 0.0913, y: 0.3312, pdf: "pdf/P_296.pdf" },
-      { n: 297, x: 0.0750, y: 0.3558, pdf: "pdf/P_297.pdf" },
-      { n: 298, x: 0.0580, y: 0.3810, pdf: "pdf/P_298.pdf" },
-      { n: 299, x: 0.0913, y: 0.3810, pdf: "pdf/P_299.pdf" },
-      { n: 300, x: 0.0580, y: 0.5023, pdf: "pdf/P_300.pdf" },
-      { n: 301, x: 0.0913, y: 0.5018, pdf: "pdf/P_301.pdf" },
-      { n: 302, x: 0.0747, y: 0.5272, pdf: "pdf/P_302.pdf" },
-      { n: 303, x: 0.0583, y: 0.5523, pdf: "pdf/P_303.pdf" },
-      { n: 304, x: 0.0913, y: 0.5523, pdf: "pdf/P_304.pdf" },
-      { n: 305, x: 0.0583, y: 0.6730, pdf: "pdf/P_305.pdf" },
-      { n: 306, x: 0.0913, y: 0.6725, pdf: "pdf/P_306.pdf" },
-      { n: 307, x: 0.0750, y: 0.6978, pdf: "pdf/P_307.pdf" },
-      { n: 308, x: 0.0583, y: 0.7229, pdf: "pdf/P_308.pdf" },
-      { n: 309, x: 0.0913, y: 0.7229, pdf: "pdf/P_309.pdf" },
-      { n: 310, x: 0.0543, y: 0.8371, pdf: "pdf/P_310.pdf" },
-      { n: 311, x: 0.0977, y: 0.8371, pdf: "pdf/P_311.pdf" },
-      { n: 312, x: 0.0760, y: 0.8689, pdf: "pdf/P_312.pdf" },
-      { n: 313, x: 0.0543, y: 0.9020, pdf: "pdf/P_313.pdf" },
-      { n: 314, x: 0.0973, y: 0.9020, pdf: "pdf/P_314.pdf" },
-      { n: 315, x: 0.1863, y: 0.8366, pdf: "pdf/P_315.pdf" },
-      { n: 316, x: 0.2293, y: 0.8366, pdf: "pdf/P_316.pdf" },
-      { n: 317, x: 0.2080, y: 0.8689, pdf: "pdf/P_317.pdf" },
-      { n: 318, x: 0.1863, y: 0.9020, pdf: "pdf/P_318.pdf" },
-      { n: 319, x: 0.2293, y: 0.9020, pdf: "pdf/P_319.pdf" },
-      { n: 320, x: 0.3210, y: 0.8366, pdf: "pdf/P_320.pdf" },
-      { n: 321, x: 0.3640, y: 0.8366, pdf: "pdf/P_321.pdf" },
-      { n: 322, x: 0.3423, y: 0.8689, pdf: "pdf/P_322.pdf" },
-      { n: 323, x: 0.3210, y: 0.9020, pdf: "pdf/P_323.pdf" },
-      { n: 324, x: 0.3637, y: 0.9020, pdf: "pdf/P_324.pdf" },
-
-      // --- VERDI 325–364 ---
-      { n: 325, x: 0.4550, y: 0.8366, pdf: "pdf/P_325.pdf" },
-      { n: 326, x: 0.4983, y: 0.8366, pdf: "pdf/P_326.pdf" },
-      { n: 327, x: 0.4767, y: 0.8689, pdf: "pdf/P_327.pdf" },
-      { n: 328, x: 0.4553, y: 0.9020, pdf: "pdf/P_328.pdf" },
-      { n: 329, x: 0.4987, y: 0.9020, pdf: "pdf/P_329.pdf" },
-      { n: 330, x: 0.5897, y: 0.8371, pdf: "pdf/P_330.pdf" },
-      { n: 331, x: 0.6327, y: 0.8371, pdf: "pdf/P_331.pdf" },
-      { n: 332, x: 0.6110, y: 0.8689, pdf: "pdf/P_332.pdf" },
-      { n: 333, x: 0.5897, y: 0.9020, pdf: "pdf/P_333.pdf" },
-      { n: 334, x: 0.6327, y: 0.9015, pdf: "pdf/P_334.pdf" },
-      { n: 335, x: 0.7217, y: 0.8366, pdf: "pdf/P_335.pdf" },
-      { n: 336, x: 0.7647, y: 0.8366, pdf: "pdf/P_336.pdf" },
-      { n: 337, x: 0.7430, y: 0.8689, pdf: "pdf/P_337.pdf" },
-      { n: 338, x: 0.7217, y: 0.9020, pdf: "pdf/P_338.pdf" },
-      { n: 339, x: 0.7647, y: 0.9020, pdf: "pdf/P_339.pdf" },
-      { n: 340, x: 0.7280, y: 0.6730, pdf: "pdf/P_340.pdf" },
-      { n: 341, x: 0.7610, y: 0.6730, pdf: "pdf/P_341.pdf" },
-      { n: 342, x: 0.7443, y: 0.6978, pdf: "pdf/P_342.pdf" },
-      { n: 343, x: 0.7280, y: 0.7224, pdf: "pdf/P_343.pdf" },
-      { n: 344, x: 0.7610, y: 0.7229, pdf: "pdf/P_344.pdf" },
-      { n: 345, x: 0.7280, y: 0.4812, pdf: "pdf/P_345.pdf" },
-      { n: 346, x: 0.7610, y: 0.4812, pdf: "pdf/P_346.pdf" },
-      { n: 347, x: 0.7443, y: 0.5063, pdf: "pdf/P_347.pdf" },
-      { n: 348, x: 0.7280, y: 0.5310, pdf: "pdf/P_348.pdf" },
-      { n: 349, x: 0.7610, y: 0.5310, pdf: "pdf/P_349.pdf" },
-      { n: 350, x: 0.8130, y: 0.4545, pdf: "pdf/P_350.pdf" },
-      { n: 351, x: 0.8560, y: 0.4545, pdf: "pdf/P_351.pdf" },
-      { n: 352, x: 0.8347, y: 0.4870, pdf: "pdf/P_352.pdf" },
-      { n: 353, x: 0.8130, y: 0.5193, pdf: "pdf/P_353.pdf" },
-      { n: 354, x: 0.8557, y: 0.5193, pdf: "pdf/P_354.pdf" },
-      { n: 355, x: 0.8990, y: 0.4545, pdf: "pdf/P_355.pdf" },
-      { n: 356, x: 0.9420, y: 0.4545, pdf: "pdf/P_356.pdf" },
-      { n: 357, x: 0.9203, y: 0.4870, pdf: "pdf/P_357.pdf" },
-      { n: 358, x: 0.8987, y: 0.5193, pdf: "pdf/P_358.pdf" },
-      { n: 359, x: 0.9420, y: 0.5193, pdf: "pdf/P_359.pdf" },
-      { n: 360, x: 0.9053, y: 0.3109, pdf: "pdf/P_360.pdf" },
-      { n: 361, x: 0.9383, y: 0.3109, pdf: "pdf/P_361.pdf" },
-      { n: 362, x: 0.9217, y: 0.3361, pdf: "pdf/P_362.pdf" },
-      { n: 363, x: 0.9053, y: 0.3610, pdf: "pdf/P_363.pdf" },
-      { n: 364, x: 0.9383, y: 0.3610, pdf: "pdf/P_364.pdf" }
+      { n: 295, x: 0.0583, y: 0.3312 },
+      { n: 296, x: 0.0913, y: 0.3312 },
+      { n: 297, x: 0.0750, y: 0.3558 },
+      { n: 298, x: 0.0580, y: 0.3810 },
+      { n: 299, x: 0.0913, y: 0.3810 },
+      { n: 300, x: 0.0580, y: 0.5023 },
+      { n: 301, x: 0.0913, y: 0.5018 },
+      { n: 302, x: 0.0747, y: 0.5272 },
+      { n: 303, x: 0.0583, y: 0.5523 },
+      { n: 304, x: 0.0913, y: 0.5523 },
+      { n: 305, x: 0.0583, y: 0.6730 },
+      { n: 306, x: 0.0913, y: 0.6725 },
+      { n: 307, x: 0.0750, y: 0.6978 },
+      { n: 308, x: 0.0583, y: 0.7229 },
+      { n: 309, x: 0.0913, y: 0.7229 },
+      { n: 310, x: 0.0543, y: 0.8371 },
+      { n: 311, x: 0.0977, y: 0.8371 },
+      { n: 312, x: 0.0760, y: 0.8689 },
+      { n: 313, x: 0.0543, y: 0.9020 },
+      { n: 314, x: 0.0973, y: 0.9020 },
+      { n: 315, x: 0.1863, y: 0.8366 },
+      { n: 316, x: 0.2293, y: 0.8366 },
+      { n: 317, x: 0.2080, y: 0.8689 },
+      { n: 318, x: 0.1863, y: 0.9020 },
+      { n: 319, x: 0.2293, y: 0.9020 },
+      { n: 320, x: 0.3210, y: 0.8366 },
+      { n: 321, x: 0.3640, y: 0.8366 },
+      { n: 322, x: 0.3423, y: 0.8689 },
+      { n: 323, x: 0.3210, y: 0.9020 },
+      { n: 324, x: 0.3637, y: 0.9020 },
+      { n: 325, x: 0.4550, y: 0.8366 },
+      { n: 326, x: 0.4983, y: 0.8366 },
+      { n: 327, x: 0.4767, y: 0.8689 },
+      { n: 328, x: 0.4553, y: 0.9020 },
+      { n: 329, x: 0.4987, y: 0.9020 },
+      { n: 330, x: 0.5897, y: 0.8371 },
+      { n: 331, x: 0.6327, y: 0.8371 },
+      { n: 332, x: 0.6110, y: 0.8689 },
+      { n: 333, x: 0.5897, y: 0.9020 },
+      { n: 334, x: 0.6327, y: 0.9015 },
+      { n: 335, x: 0.7217, y: 0.8366 },
+      { n: 336, x: 0.7647, y: 0.8366 },
+      { n: 337, x: 0.7430, y: 0.8689 },
+      { n: 338, x: 0.7217, y: 0.9020 },
+      { n: 339, x: 0.7647, y: 0.9020 },
+      { n: 340, x: 0.7280, y: 0.6730 },
+      { n: 341, x: 0.7610, y: 0.6730 },
+      { n: 342, x: 0.7443, y: 0.6978 },
+      { n: 343, x: 0.7280, y: 0.7224 },
+      { n: 344, x: 0.7610, y: 0.7229 },
+      { n: 345, x: 0.7280, y: 0.4812 },
+      { n: 346, x: 0.7610, y: 0.4812 },
+      { n: 347, x: 0.7443, y: 0.5063 },
+      { n: 348, x: 0.7280, y: 0.5310 },
+      { n: 349, x: 0.7610, y: 0.5310 },
+      { n: 350, x: 0.8130, y: 0.4545 },
+      { n: 351, x: 0.8560, y: 0.4545 },
+      { n: 352, x: 0.8347, y: 0.4870 },
+      { n: 353, x: 0.8130, y: 0.5193 },
+      { n: 354, x: 0.8557, y: 0.5193 },
+      { n: 355, x: 0.8990, y: 0.4545 },
+      { n: 356, x: 0.9420, y: 0.4545 },
+      { n: 357, x: 0.9203, y: 0.4870 },
+      { n: 358, x: 0.8987, y: 0.5193 },
+      { n: 359, x: 0.9420, y: 0.5193 },
+      { n: 360, x: 0.9053, y: 0.3109 },
+      { n: 361, x: 0.9383, y: 0.3109 },
+      { n: 362, x: 0.9217, y: 0.3361 },
+      { n: 363, x: 0.9053, y: 0.3610 },
+      { n: 364, x: 0.9383, y: 0.3610 }
     ];
 
     const map = document.getElementById("map");
@@ -184,17 +195,17 @@
     markers.forEach(m => {
       const el = document.createElement("div");
 
-      // colore automatico
       el.className = "marker " + (m.n <= 324 ? "azzurro" : "verde");
-
-      // nessun numero dentro il marker
-      el.textContent = "";
-
       el.style.left = (m.x * 100) + "%";
       el.style.top = (m.y * 100) + "%";
 
+      // Tooltip doppio
       el.addEventListener("mouseenter", () => {
-        tooltip.textContent = "Palo " + m.n;
+        tooltip.innerHTML = `
+          <div><strong>Palo ${m.n}</strong></div>
+          <a href="pdf/P_${m.n}.pdf" target="_blank">📄 Documento principale</a>
+          <a href="pdf/P_${m.n}_QLT.pdf" target="_blank">🟠 Documento Qualità (QLT)</a>
+        `;
         tooltip.style.left = (m.x * 100) + "%";
         tooltip.style.top = (m.y * 100) + "%";
         tooltip.style.display = "block";
@@ -204,19 +215,15 @@
         tooltip.style.display = "none";
       });
 
+      // Se vuoi mantenere la selezione grafica
       el.addEventListener("click", () => {
         if (selectedMarker) selectedMarker.classList.remove("selected");
-
         el.classList.add("selected");
         selectedMarker = el;
-
-        window.open(m.pdf, "_blank");
       });
 
       map.appendChild(el);
     });
   </script>
 </body>
-
 </html>
-
