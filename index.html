@@ -108,6 +108,19 @@
       background: rgba(0,0,0,0.9);
     }
 
+/* X rossa sui pali scapitozzati quando il filtro è attivo */
+.marker.scapitozzato-attivo::after {
+  content: "✖";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 22px;
+  color: red;
+  font-weight: bold;
+  pointer-events: none;
+}
+
     /* 🔶 Pulsante Pali Scapitozzati */
     .scapi-button {
       position: fixed;
@@ -236,11 +249,17 @@ function toggleScapitozzati() {
   document.querySelectorAll(".marker").forEach(el => {
     const isScapi = el.dataset.scapi === "true";
 
-    if (filtroScapi && !isScapi) {
-      el.classList.add("scapitozzato-attivo");
-    } else {
-      el.classList.remove("scapitozzato-attivo");
-    }
+    if (filtroScapi) {
+  if (isScapi) {
+    el.classList.add("scapitozzato-attivo");   // mostra X
+    el.style.display = "block";
+  } else {
+    el.style.display = "none";                 // nasconde gli altri
+  }
+} else {
+  el.classList.remove("scapitozzato-attivo");  // rimuove X
+  el.style.display = "block";                  // mostra tutto
+}
   });
 }
 
