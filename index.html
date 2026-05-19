@@ -66,8 +66,8 @@
     .tooltip a:hover {
       text-decoration: underline;
     }
-    
-/* ❌ CROCE ROSSA SOLO QUANDO IL FILTRO È ATTIVO (identico al CC2) */
+
+    /* CROCE ROSSA QUANDO FILTRO ATTIVO */
     .marker.scapitozzato-attivo::before {
       content: "✚";
       position: absolute;
@@ -81,7 +81,7 @@
       text-shadow: 0 0 4px black, 0 0 6px black, 0 0 8px black;
       z-index: 9999;
     }
-    
+
     .marker.prova-carico::after {
       content: "🏋️";
       position: absolute;
@@ -102,6 +102,7 @@
       pointer-events: none;
     }
 
+    /* PULSANTI */
     .legend-button {
       position: fixed;
       top: 20px;
@@ -123,11 +124,12 @@
       background: rgba(0,0,0,0.9);
     }
 
-
+    /* LEGENDA ANCORATA AL PULSANTE */
     .legend-panel {
-      position: fixed;
-      top: 110px;
-      right: 20px;
+      position: absolute;
+      top: 0;
+      right: 100%;
+      margin-right: 10px;
       width: 220px;
       background: rgba(0,0,0,0.85);
       color: #fff;
@@ -152,31 +154,34 @@
       font-size: 18px;
       margin-right: 8px;
     }
-</style>
+  </style>
 </head>
 
 <body>
 
+<!-- PULSANTE + LEGENDA -->
 <div class="legend-button" onclick="toggleLegend()" title="Apri legenda">
   Legenda prove sui pali
+
+  <div id="legendPanel" class="legend-panel">
+    <div class="item">
+      <span class="icon">🏋️</span>
+      <span>Prova di carico 1,5×PSE<br><small>Pali: 302, 342</small></span>
+    </div>
+
+    <div class="item">
+      <span class="icon">📡</span>
+      <span>Prova sonica “cross-hole”<br><small>Pali: 299, 311, 325, 350</small></span>
+    </div>
+  </div>
 </div>
 
+<!-- PULSANTE SCAPITOZZATI -->
 <div class="legend-button" onclick="toggleScapitozzati()" style="top: 60px; right: 180px;">
   ⛏️ Pali scapitozzati
 </div>
 
-<div id="legendPanel" class="legend-panel">
-  <div class="item">
-    <span class="icon">🏋️</span>
-    <span>Prova di carico 1,5×PSE<br><small>Pali: 302, 342</small></span>
-  </div>
-
-  <div class="item">
-    <span class="icon">📡</span>
-    <span>Prova sonica “cross-hole”<br><small>Pali: 299, 311, 325, 350</small></span>
-  </div>
-</div>
-
+<!-- HOME -->
 <a href="https://gussofrag.github.io/Key-Plant/"
    style="
      position: fixed;
